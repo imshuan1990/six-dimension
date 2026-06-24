@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>82TRADE 六維數據</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>body{background:#0b1020;color:#fff;font-family:system-ui}</style>
+</head>
+<body class="p-4">
+<header class="flex items-center gap-3 mb-6">
+<img src="./logo.png" class="w-10 h-10">
+<h1 class="text-2xl font-bold text-amber-300">82TRADE 六維數據</h1>
+</header>
+
+<div class="grid md:grid-cols-3 gap-4 max-w-5xl">
+<div class="bg-white/5 p-5 rounded-2xl"><div>資金費率</div><div id="fr" class="text-3xl mt-2">--</div></div>
+<div class="bg-white/5 p-5 rounded-2xl"><div>恐懼貪婪</div><div id="fg" class="text-3xl mt-2">--</div></div>
+<div class="bg-white/5 p-5 rounded-2xl"><div>BTC價格</div><div id="btc" class="text-3xl mt-2">--</div></div>
+
+<div class="bg-white/5 p-5 rounded-2xl md:col-span-3">
+<h2 class="mb-3">ETF 昨日</h2>
+<button onclick="getETF('btc')" class="px-4 py-2 bg-amber-600/30 rounded mr-2">BTC ETF</button><span id="btcR">--</span><br><br>
+<button onclick="getETF('eth')" class="px-4 py-2 bg-violet-600/30 rounded mr-2">ETH ETF</button><span id="ethR">--</span>
+</div>
+
+<div class="bg-white/5 p-5 rounded-2xl md:col-span-3">
+<h2 class="mb-3">URPD 籌碼</h2>
+<button onclick="document.getElementById('u').src='https://www.lookintobitcoin.com/charts/utxo-realized-price-distribution/';this.textContent='已載入'" class="px-4 py-2 bg-blue-600/30 rounded">載入圖表</button>
+<iframe id="u" class="w-full h-[400px] mt-3 rounded bg-black" loading="lazy"></iframe>
+</div>
+</div>
+
+<script>
+async function up(){fr.textContent=(await fetch('https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT&limit=1').then(r=>r.json()))[0].fundingRate;fg.textContent=(await fetch('https://api.alternative.me/fng/?limit=1').then(r=>r.json())).data[0].value;btc.textContent='$'+Math.round((await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT').then(r=>r.json())).lastPrice)}up();setInterval(up,60000);
+async function getETF(t){const e=document.getElementById(t+'R');e.textContent='...';try{const d=await fetch('https://r.jina.ai/http://farside.co.uk/'+t+'/').then(r=>r.text());const m=d.match(/Total[^\d-]*([-\d.,]+)/);e.textContent=m?m[1]:'ok'}catch{e.textContent='err'}}
+</script>
+</body>
+</html>
